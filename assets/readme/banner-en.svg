@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="440" viewBox="0 0 1440 440" role="img" aria-labelledby="title description">
+  <title id="title">PaceDock — Measure. Rank. Apply. Restore.</title>
+  <desc id="description">Near-black instrument-panel brand cover. PaceDock name and tagline on the left; a ranked retest concept card on the right shows candidate physical cores, scores, and the apply/verify/restore flow. All figures are illustrative.</desc>
+  <defs>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#181825"/>
+      <stop offset="1" stop-color="#14141f"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#262637" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1440" height="440" rx="24" fill="#11111b"/>
+  <rect x="1" y="1" width="1438" height="438" rx="23" fill="none" stroke="#313244" stroke-width="2"/>
+  <path d="M24 0H1416A24 24 0 0 1 1440 24V8H0V24A24 24 0 0 1 24 0Z" fill="#89b4fa"/>
+  <rect x="815" y="40" width="570" height="360" rx="20" fill="url(#grid)" opacity=".45"/>
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <circle cx="78" cy="79" r="4" fill="#89b4fa"/>
+    <text x="94" y="84" fill="#89b4fa" font-size="13" font-weight="600" letter-spacing="2.5">MEASURE. RANK. APPLY. RESTORE.</text>
+    <text x="72" y="203" fill="#cdd6f4" font-size="100" font-weight="750" letter-spacing="-5">PaceDock<tspan fill="#89b4fa">.</tspan></text>
+    <text x="76" y="260" fill="#cdd6f4" font-size="29" font-weight="600">Measure. Rank. Apply. Restore.</text>
+    <text x="78" y="303" fill="#a6adc8" font-size="17" letter-spacing="1">ISR probing  /  ranked retest  /  manual apply  /  full restore</text>
+    <g font-size="12" font-weight="600">
+      <rect x="76" y="348" width="128" height="30" rx="15" fill="#89b4fa"/>
+      <text x="140" y="368" fill="#11111b" text-anchor="middle">Windows 11 x64</text>
+      <rect x="214" y="348" width="128" height="30" rx="15" fill="#181825" stroke="#585b70"/>
+      <text x="278" y="368" fill="#cdd6f4" text-anchor="middle">Admin rights</text>
+      <text x="363" y="368" fill="#7f849c" font-weight="400">EVIDENCE, NOT GUESSWORK.</text>
+    </g>
+    <g stroke="#585b70" stroke-width="1.5" fill="none">
+      <path d="M1110 249V282M933 314V282H1287V314"/>
+      <path d="M1105 306L1110 311L1115 306M928 306L933 311L938 306M1282 306L1287 311L1292 306"/>
+    </g>
+    <rect x="942" y="81" width="336" height="168" rx="13" fill="url(#panel)" opacity=".55"/>
+    <rect x="934" y="73" width="336" height="168" rx="13" fill="url(#panel)" stroke="#313244"/>
+    <path d="M948 73H1256A14 14 0 0 1 1270 87V115H934V87A14 14 0 0 1 948 73Z" fill="#20202c"/>
+    <path d="M934 115H1270" fill="none" stroke="#313244"/>
+    <rect x="954" y="87" width="16" height="16" rx="3" fill="none" stroke="#89b4fa" stroke-width="1.5"/>
+    <path d="M958 93H966M958 98H963" stroke="#89b4fa" stroke-width="1.5"/>
+    <text x="986" y="100" fill="#cdd6f4" font-size="15" font-weight="600">Ranked retest</text>
+    <text x="1224" y="99" fill="#6c7086" font-size="11" text-anchor="end">illustrative</text>
+    <g font-family="Consolas, monospace" font-size="13">
+      <circle cx="961" cy="137" r="3" fill="#a6e3a1"/>
+      <text x="973" y="141" fill="#cdd6f4">#1 Core 3 (LP 6, 7)</text>
+      <text x="1256" y="141" fill="#a6e3a1" text-anchor="end">98.7</text>
+      <circle cx="961" cy="167" r="3" fill="#f9e2af"/>
+      <text x="973" y="171" fill="#cdd6f4">#2 Core 5 (LP 10, 11)</text>
+      <text x="1256" y="171" fill="#f9e2af" text-anchor="end">98.5</text>
+      <circle cx="961" cy="197" r="3" fill="#6c7086"/>
+      <text x="973" y="201" fill="#a6adc8">#3 Core 1 (LP 2, 3)</text>
+      <text x="1256" y="201" fill="#a6adc8" text-anchor="end">97.2</text>
+    </g>
+    <rect x="1040" y="157" width="54" height="16" rx="8" fill="#3a3423"/>
+    <text x="1067" y="169" fill="#f9e2af" font-size="11" font-weight="600" text-anchor="middle">close</text>
+    <rect x="958" y="222" width="120" height="4" rx="2" fill="#a6e3a1" opacity=".85"/>
+    <rect x="958" y="252" width="118" height="4" rx="2" fill="#f9e2af" opacity=".8"/>
+    <rect x="958" y="282" width="104" height="4" rx="2" fill="#585b70" opacity=".8"/>
+    <g fill="#181825" stroke="#585b70">
+      <rect x="862" y="318" width="142" height="49" rx="9"/>
+      <rect x="1039" y="318" width="142" height="49" rx="9"/>
+      <rect x="1216" y="318" width="142" height="49" rx="9"/>
+    </g>
+    <g font-size="14" font-weight="600" text-anchor="middle" fill="#cdd6f4">
+      <text x="933" y="348">Apply mask</text>
+      <text x="1110" y="348">Verify readback</text>
+      <text x="1287" y="348">One-click restore</text>
+    </g>
+    <text x="1110" y="396" fill="#6c7086" font-size="11" text-anchor="middle" letter-spacing="1">GPU interrupt affinity · evidence-driven · concept art</text>
+  </g>
+</svg>
