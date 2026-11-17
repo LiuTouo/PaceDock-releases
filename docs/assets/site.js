@@ -93,6 +93,72 @@ function initMotion() {
   refreshMotion();
 }
 
+function initParallax() {
+  // Pointer tilt via the Web Animations API: the CSP blocks inline style
+  // attributes, and cancel-and-retween keeps motion interruptible and
+  // reduced-motion aware without any per-frame style writes.
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+  const coarse = matchMedia("(hover: none), (pointer: coarse)");
+  if (reduced.matches || coarse.matches || !("IntersectionObserver" in window))
+    return;
+  const zone = document.querySelector(".hero");
+  const stage = document.querySelector(".hero-visual");
+  if (!zone || !stage) return;
+  let tilt = null;
+  let raf = 0;
+  let pending = null;
+  let enabled = true;
+  let visible = false;
+  function tween(rx, ry) {
+    tilt?.cancel();
+    tilt = stage.animate(
+      { transform: `perspective(900px) rotateX(${rx}) rotateY(${ry})` },
+      { duration: 650, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "forwards" },
+    );
+  }
+  function applyTilt(event) {
+    const bounds = zone.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+    tween(`${(-y * 4).toFixed(2)}deg`, `${(x * 5).toFixed(2)}deg`);
+  }
+  function rest() {
+    tween("0deg", "0deg");
+  }
+  function onMove(event) {
+    pending = event;
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      const current = pending;
+      pending = null;
+      if (current && enabled && visible) applyTilt(current);
+    });
+  }
+  try {
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (!visible) rest(); // settle flat once the hero leaves the viewport
+    });
+    observer.observe(zone);
+  } catch {
+    // A failed observer must never break the page or the demo.
+    return;
+  }
+  zone.addEventListener("pointermove", onMove);
+  zone.addEventListener("pointerleave", rest);
+  reduced.addEventListener("change", () => {
+    enabled = !reduced.matches;
+    if (!enabled) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+      pending = null;
+      tilt?.cancel();
+      tilt = null;
+    }
+  });
+}
+
 const english = document.documentElement.lang === "en";
 const copy = english
   ? {
@@ -360,3 +426,4 @@ resetButton.addEventListener("click", () => {
 clearRanking(true);
 app.hidden = false;
 initMotion();
+initParallax();
