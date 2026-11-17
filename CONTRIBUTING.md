@@ -42,6 +42,6 @@ SITE_URL=https://liutouo.github.io/PaceDock-releases/ npm test
 
 The `Website checks and Pages` workflow tests pull requests. Pushes to `main` and manual runs on `main` deploy only after tests pass. The deployment uses GitHub's Pages actions, the `github-pages` environment, and job-scoped `pages: write` / `id-token: write` permissions. No personal access token is required.
 
-The repository's **Settings → Pages → Source** must be **GitHub Actions**. Upload only `docs/`, never the repository root or desktop build output.
+The repository's **Settings → Pages → Source** must be **GitHub Actions** once account billing is unblocked. Until then, Pages is temporarily served from the `gh-pages` branch (`/docs` folder) using workflow-free legacy builds; update that branch from `docs/` on main when the site changes, and do not run the two deployment modes at the same time. Upload only `docs/`, never the repository root or desktop build output.
 
 Before publishing, verify both languages, keyboard interaction, reduced motion, no-JavaScript fallback, and mobile layouts. Afterwards, repeat the checks against the public URL and confirm the download link still leads to the existing latest release.
