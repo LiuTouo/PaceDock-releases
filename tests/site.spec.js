@@ -193,13 +193,7 @@ for (const locale of locales) {
       await expect(page.locator("#demo-result")).toBeVisible();
     });
 
-    test("reduced motion, FAQ, and focus indicators", async ({ page }) => {
-      await page.emulateMedia({ reducedMotion: "reduce" });
-      expect(
-        await page
-          .locator("html")
-          .evaluate((e) => getComputedStyle(e).scrollBehavior),
-      ).toBe("auto");
+    test("FAQ and focus indicators", async ({ page }) => {
       await page.locator(".faq-list summary").first().click();
       await expect(page.locator(".faq-list details").first()).toHaveAttribute(
         "open",

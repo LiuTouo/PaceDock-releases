@@ -44,4 +44,4 @@ The `Website checks and Pages` workflow tests pull requests. Pushes to `main` an
 
 The repository's **Settings → Pages → Source** must be **GitHub Actions** once account billing is unblocked. Until then, Pages is temporarily served from the `gh-pages` branch (`/docs` folder) using workflow-free legacy builds; update that branch from `docs/` on main when the site changes, and do not run the two deployment modes at the same time. Upload only `docs/`, never the repository root or desktop build output.
 
-Before publishing, verify both languages, keyboard interaction, reduced motion, no-JavaScript fallback, and mobile layouts. Afterwards, repeat the checks against the public URL and confirm the download link still leads to the existing latest release.
+Before publishing, verify both languages, keyboard interaction, no-JavaScript fallback, and mobile layouts. Site motion is intentionally always on: the owner decided not to gate effects behind the OS "show animations" preference, so `prefers-reduced-motion` is not honored. Afterwards, repeat the checks against the public URL and confirm the download link still leads to the existing latest release.

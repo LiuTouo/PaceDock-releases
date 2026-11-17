@@ -110,33 +110,37 @@ for (const path of ["./", "en/"]) {
       }
     });
 
-    test("reduced motion switches live to static scenes and back", async ({
+    test("motion stays on under a reduced-motion preference", async ({
       page,
     }, testInfo) => {
       await expect(page.locator("html")).toHaveClass(/story-enabled/);
       await page.emulateMedia({ reducedMotion: "reduce" });
-      await expect(page.locator("html")).not.toHaveClass(
-        /story-enabled|motion-ready/,
+      await page.reload();
+      await expect(page.locator("html")).toHaveClass(
+        /js motion-ready story-enabled/,
       );
-      for (const name of scenes) {
-        const panel = page.locator(`[data-panel="${name}"]`);
-        await expect(panel).toBeVisible();
-        expect(
-          await panel.evaluate((el) => getComputedStyle(el).transform),
-        ).toBe("none");
-      }
+      expect(
+        await page
+          .locator(".hero h1")
+          .evaluate((el) => getComputedStyle(el).animationName),
+      ).toBe("title-unveil");
       expect(
         await page
           .locator("html")
           .evaluate((el) => getComputedStyle(el).scrollBehavior),
-      ).toBe("auto");
-      expect(
-        await page.evaluate(
-          () =>
-            document.getAnimations().filter((a) => a.playState === "running")
-              .length,
-        ),
-      ).toBe(0);
+      ).toBe("smooth");
+      await page
+        .locator('[data-scene="rank"]')
+        .evaluate((el) =>
+          el.scrollIntoView({ block: "center", behavior: "instant" }),
+        );
+      await expect(page.locator(".feature-story")).toHaveAttribute(
+        "data-active-scene",
+        "rank",
+      );
+      await expect(
+        page.locator('[data-panel="rank"]'),
+      ).toHaveClass(/is-active/);
       await page.screenshot({
         path: testInfo.outputPath("reduced-motion.png"),
       });
