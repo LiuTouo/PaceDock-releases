@@ -410,18 +410,21 @@ html:lang(en) .hero h1 {
 .gauge-panel::after {
   content: "";
   position: absolute;
-  inset: 0;
-  pointer-events: none;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 72px;
   background: linear-gradient(
     180deg,
-    transparent 0,
-    transparent 1.2%,
-    #89b4fa80 1.6%,
-    transparent 2%
+    transparent,
+    #89b4fa2e 45%,
+    #89b4fa7a 50%,
+    #89b4fa2e 55%,
+    transparent
   );
-  background-repeat: no-repeat;
-  background-size: 100% 300%;
-  animation: boot-scan 950ms var(--ease-standard) 180ms backwards;
+  opacity: 0;
+  pointer-events: none;
+  animation: boot-scan 1000ms var(--ease-standard) 180ms both;
 }
 .gauge-head {
   display: flex;
@@ -1414,17 +1417,17 @@ summary::marker {
 @keyframes boot-scan {
   0% {
     opacity: 0;
-    background-position-y: -20%;
+    transform: translateY(-80px);
   }
   12% {
-    opacity: 0.9;
+    opacity: 1;
   }
-  88% {
-    opacity: 0.9;
+  85% {
+    opacity: 1;
   }
   100% {
     opacity: 0;
-    background-position-y: 120%;
+    transform: translateY(460px);
   }
 }
 @keyframes sweep {
