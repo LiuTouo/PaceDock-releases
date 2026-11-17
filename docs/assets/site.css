@@ -1393,8 +1393,8 @@ summary::marker {
 @keyframes immersive-in {
   from {
     opacity: 0;
-    transform: translateY(26px) scale(0.972);
-    filter: blur(6px);
+    transform: translateY(20px) scale(0.98);
+    filter: blur(4px);
   }
   to {
     opacity: 1;
@@ -1491,22 +1491,22 @@ summary::marker {
     opacity: 0;
   }
   .motion-ready .reveal.in-view {
-    animation: immersive-in 640ms var(--ease-out) backwards;
+    animation: immersive-in 430ms var(--ease-out) backwards;
   }
   .motion-ready .reveal.d1 {
-    animation-delay: 50ms;
+    animation-delay: 40ms;
   }
   .motion-ready .reveal.d2 {
-    animation-delay: 100ms;
+    animation-delay: 80ms;
   }
   .motion-ready .reveal.d3 {
-    animation-delay: 150ms;
+    animation-delay: 120ms;
   }
   .motion-ready .reveal.d4 {
-    animation-delay: 200ms;
+    animation-delay: 160ms;
   }
   .motion-ready .reveal.d5 {
-    animation-delay: 250ms;
+    animation-delay: 200ms;
   }
   #ranking-panel:not([hidden]),
   #demo-result:not([hidden]),

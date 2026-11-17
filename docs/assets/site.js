@@ -97,25 +97,31 @@ function initParallax() {
   const coarse = matchMedia("(hover: none), (pointer: coarse)");
   if (coarse.matches || !("IntersectionObserver" in window))
     return;
-  const zone = document.querySelector(".hero");
   const stage = document.querySelector(".hero-visual");
-  if (!zone || !stage) return;
+  if (!stage) return;
   let tilt = null;
   let raf = 0;
   let pending = null;
   let visible = false;
+  function entranceRunning() {
+    return stage
+      .getAnimations()
+      .some((a) => a.animationName === "product-in");
+  }
   function tween(rx, ry) {
     tilt?.cancel();
     tilt = stage.animate(
       { transform: `perspective(900px) rotateX(${rx}) rotateY(${ry})` },
-      { duration: 650, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "forwards" },
+      { duration: 500, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "forwards" },
     );
   }
   function applyTilt(event) {
-    const bounds = zone.getBoundingClientRect();
+    // Magnetic tilt: the panel leans toward the cursor, driven by position
+    // over the panel itself—not the whole hero.
+    const bounds = stage.getBoundingClientRect();
     const x = (event.clientX - bounds.left) / bounds.width - 0.5;
     const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-    tween(`${(-y * 4).toFixed(2)}deg`, `${(x * 5).toFixed(2)}deg`);
+    tween(`${(y * 3.2).toFixed(2)}deg`, `${(-x * 4).toFixed(2)}deg`);
   }
   function rest() {
     tween("0deg", "0deg");
@@ -127,7 +133,8 @@ function initParallax() {
       raf = 0;
       const current = pending;
       pending = null;
-      if (current && visible) applyTilt(current);
+      if (!current || !visible || entranceRunning()) return;
+      applyTilt(current);
     });
   }
   try {
@@ -135,13 +142,13 @@ function initParallax() {
       visible = entry.isIntersecting;
       if (!visible) rest(); // settle flat once the hero leaves the viewport
     });
-    observer.observe(zone);
+    observer.observe(stage);
   } catch {
     // A failed observer must never break the page or the demo.
     return;
   }
-  zone.addEventListener("pointermove", onMove);
-  zone.addEventListener("pointerleave", rest);
+  stage.addEventListener("pointermove", onMove);
+  stage.addEventListener("pointerleave", rest);
 }
 
 function initSmoothScroll() {
@@ -160,7 +167,7 @@ function initSmoothScroll() {
       window.scrollTo(0, target);
       return;
     }
-    last = scrollY + remaining * 0.14;
+    last = scrollY + remaining * 0.16;
     window.scrollTo(0, last);
     raf = requestAnimationFrame(loop);
   }
