@@ -159,6 +159,73 @@ function initParallax() {
   });
 }
 
+function initSmoothScroll() {
+  // Wheel-lerp smooth scrolling (design-site inertia). Native paths stay in
+  // charge: any scroll we did not cause snaps the target back immediately.
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+  const coarse = matchMedia("(hover: none), (pointer: coarse)");
+  if (reduced.matches || coarse.matches) return;
+  let target = null;
+  let last = -1;
+  let raf = 0;
+  let enabled = true;
+  function loop() {
+    raf = 0;
+    const remaining = target - scrollY;
+    if (Math.abs(remaining) < 0.5) {
+      last = target;
+      window.scrollTo(0, target);
+      return;
+    }
+    last = scrollY + remaining * 0.14;
+    window.scrollTo(0, last);
+    raf = requestAnimationFrame(loop);
+  }
+  addEventListener(
+    "wheel",
+    (event) => {
+      // Keep native behavior for pinch-zoom and horizontal scrolls in code blocks.
+      if (
+        !enabled ||
+        event.ctrlKey ||
+        event.defaultPrevented ||
+        Math.abs(event.deltaX) > Math.abs(event.deltaY)
+      )
+        return;
+      event.preventDefault();
+      const scale = event.deltaMode === 1 ? 16 : 1;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      target = Math.max(
+        0,
+        Math.min(max, (target ?? scrollY) + event.deltaY * scale),
+      );
+      if (!raf) raf = requestAnimationFrame(loop);
+    },
+    { passive: false },
+  );
+  addEventListener(
+    "scroll",
+    () => {
+      if (target === null) return;
+      // A jump we did not author (anchor, keyboard, tests): resync instantly.
+      if (Math.abs(scrollY - last) > 1.5) {
+        target = scrollY;
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    },
+    { passive: true },
+  );
+  reduced.addEventListener("change", () => {
+    enabled = !reduced.matches;
+    if (!enabled) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+      target = null;
+    }
+  });
+}
+
 const english = document.documentElement.lang === "en";
 const copy = english
   ? {
@@ -427,3 +494,4 @@ clearRanking(true);
 app.hidden = false;
 initMotion();
 initParallax();
+initSmoothScroll();
