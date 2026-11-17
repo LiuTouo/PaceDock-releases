@@ -1409,6 +1409,18 @@ summary::marker {
     transform: translateY(10px);
   }
 }
+@keyframes immersive-in {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.972);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
 @keyframes bar-sweep {
   from {
     transform: scaleX(0);
@@ -1499,7 +1511,7 @@ summary::marker {
     opacity: 0;
   }
   .motion-ready .reveal.in-view {
-    animation: rise-in 550ms var(--ease-out) backwards;
+    animation: immersive-in 640ms var(--ease-out) backwards;
   }
   .motion-ready .reveal.d1 {
     animation-delay: 50ms;
@@ -1562,15 +1574,18 @@ summary::marker {
     opacity: 0;
     visibility: hidden;
     transform: translateY(28px) scale(0.98);
+    filter: blur(3px);
     transition:
       opacity 450ms var(--ease-standard),
       transform 550ms var(--ease-out),
+      filter 450ms var(--ease-standard),
       visibility 550ms;
   }
   .story-enabled .scene-panel.is-active {
     opacity: 1;
     visibility: visible;
     transform: none;
+    filter: blur(0);
   }
 }
 @media (max-width: 1100px) {
