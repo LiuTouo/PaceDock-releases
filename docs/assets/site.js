@@ -13,7 +13,8 @@ function initMotion() {
     ),
   ];
   let revealObserver;
-  let sceneObserver;
+  let scrub = null;
+  let raf = 0;
 
   for (const element of reveals) {
     const peers = reveals.filter(
@@ -22,17 +23,56 @@ function initMotion() {
     element.classList.add("reveal", `d${Math.min(peers.indexOf(element), 5)}`);
   }
 
-  function showScene(name) {
+  function setActive(index) {
+    const name = steps[index].dataset.scene;
+    steps.forEach((step, i) => {
+      if (i === index) step.removeAttribute("aria-hidden");
+      else step.setAttribute("aria-hidden", "true");
+      panels[i].classList.toggle("is-active", i === index);
+    });
     story.dataset.activeScene = name;
-    for (const panel of panels) {
-      panel.classList.toggle("is-active", panel.dataset.panel === name);
-    }
+  }
+
+  // Vertical scroll scrubs the horizontal pan; the paused 1ms animation acts
+  // as a CSP-safe transform we can seek instead of writing inline styles.
+  function applyPan() {
+    raf = 0;
+    if (!scrub) return;
+    const rect = story.getBoundingClientRect();
+    const total = story.offsetHeight - innerHeight;
+    const progress =
+      total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
+    scrub.currentTime = progress;
+    setActive(Math.min(steps.length - 1, Math.round(progress * (steps.length - 1))));
+  }
+
+  function schedulePan() {
+    if (raf || !scrub) return;
+    raf = requestAnimationFrame(applyPan);
+  }
+
+  function measurePan() {
+    if (!scrub) return;
+    const track = story.querySelector(".pan-track");
+    const max = Math.max(0, track.scrollWidth - track.parentElement.clientWidth);
+    scrub.effect.setKeyframes([
+      { transform: "translateX(0px)" },
+      { transform: `translateX(${-max}px)` },
+    ]);
+  }
+
+  function onResize() {
+    measurePan();
+    schedulePan();
   }
 
   function refreshMotion() {
     revealObserver?.disconnect();
-    sceneObserver?.disconnect();
+    scrub?.cancel();
+    scrub = null;
     root.classList.remove("motion-ready", "story-enabled");
+    removeEventListener("scroll", schedulePan);
+    removeEventListener("resize", onResize);
 
     // Motion is optional: a failed observer must never hide the site or break the demo.
     try {
@@ -53,29 +93,30 @@ function initMotion() {
       root.classList.add("motion-ready");
 
       if (wide.matches) {
-        const visible = new Map();
-        sceneObserver = new IntersectionObserver(
-          (entries) => {
-            for (const entry of entries) {
-              if (entry.isIntersecting)
-                visible.set(entry.target, entry.intersectionRatio);
-              else visible.delete(entry.target);
-            }
-            const active = [...visible].sort((a, b) => b[1] - a[1])[0];
-            if (active) showScene(active[0].dataset.scene);
-          },
-          {
-            rootMargin: "-35% 0px -35% 0px",
-            threshold: [0, 0.25, 0.5, 0.75, 1],
-          },
-        );
-        showScene(story.dataset.activeScene);
+        const track = story.querySelector(".pan-track");
+        // The class must land before measuring: the track is only a flex row
+        // while story styles apply, otherwise scrollWidth equals the viewport.
         root.classList.add("story-enabled");
-        for (const step of steps) sceneObserver.observe(step);
+        scrub = track.animate(
+          [{ transform: "translateX(0px)" }, { transform: "translateX(0px)" }],
+          { duration: 1, easing: "linear", fill: "both" },
+        );
+        scrub.pause();
+        measurePan();
+        addEventListener("scroll", schedulePan, { passive: true });
+        addEventListener("resize", onResize, { passive: true });
+        setActive(0);
+        applyPan();
+      } else {
+        for (const step of steps) step.removeAttribute("aria-hidden");
+        for (const panel of panels) panel.classList.remove("is-active");
       }
     } catch {
       revealObserver?.disconnect();
-      sceneObserver?.disconnect();
+      scrub?.cancel();
+      scrub = null;
+      removeEventListener("scroll", schedulePan);
+      removeEventListener("resize", onResize);
       root.classList.remove("motion-ready", "story-enabled");
     }
   }
