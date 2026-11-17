@@ -3,7 +3,6 @@ function initMotion() {
   root.classList.add("js");
   if (!("IntersectionObserver" in window)) return;
 
-  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const wide = matchMedia("(min-width: 1024px) and (min-height: 760px)");
   const story = document.querySelector(".feature-story");
   const steps = [...story.querySelectorAll("[data-scene]")];
@@ -34,7 +33,6 @@ function initMotion() {
     revealObserver?.disconnect();
     sceneObserver?.disconnect();
     root.classList.remove("motion-ready", "story-enabled");
-    if (reduced.matches) return;
 
     // Motion is optional: a failed observer must never hide the site or break the demo.
     try {
@@ -88,18 +86,16 @@ function initMotion() {
     element.classList.add("in-view");
     revealObserver?.unobserve(element);
   });
-  reduced.addEventListener("change", refreshMotion);
   wide.addEventListener("change", refreshMotion);
   refreshMotion();
 }
 
 function initParallax() {
   // Pointer tilt via the Web Animations API: the CSP blocks inline style
-  // attributes, and cancel-and-retween keeps motion interruptible and
-  // reduced-motion aware without any per-frame style writes.
-  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+  // attributes, and cancel-and-retween keeps motion interruptible without any
+  // per-frame style writes.
   const coarse = matchMedia("(hover: none), (pointer: coarse)");
-  if (reduced.matches || coarse.matches || !("IntersectionObserver" in window))
+  if (coarse.matches || !("IntersectionObserver" in window))
     return;
   const zone = document.querySelector(".hero");
   const stage = document.querySelector(".hero-visual");
@@ -107,7 +103,6 @@ function initParallax() {
   let tilt = null;
   let raf = 0;
   let pending = null;
-  let enabled = true;
   let visible = false;
   function tween(rx, ry) {
     tilt?.cancel();
@@ -132,7 +127,7 @@ function initParallax() {
       raf = 0;
       const current = pending;
       pending = null;
-      if (current && enabled && visible) applyTilt(current);
+      if (current && visible) applyTilt(current);
     });
   }
   try {
@@ -147,28 +142,16 @@ function initParallax() {
   }
   zone.addEventListener("pointermove", onMove);
   zone.addEventListener("pointerleave", rest);
-  reduced.addEventListener("change", () => {
-    enabled = !reduced.matches;
-    if (!enabled) {
-      cancelAnimationFrame(raf);
-      raf = 0;
-      pending = null;
-      tilt?.cancel();
-      tilt = null;
-    }
-  });
 }
 
 function initSmoothScroll() {
   // Wheel-lerp smooth scrolling (design-site inertia). Native paths stay in
   // charge: any scroll we did not cause snaps the target back immediately.
-  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const coarse = matchMedia("(hover: none), (pointer: coarse)");
-  if (reduced.matches || coarse.matches) return;
+  if (coarse.matches) return;
   let target = null;
   let last = -1;
   let raf = 0;
-  let enabled = true;
   function loop() {
     raf = 0;
     const remaining = target - scrollY;
@@ -186,7 +169,6 @@ function initSmoothScroll() {
     (event) => {
       // Keep native behavior for pinch-zoom and horizontal scrolls in code blocks.
       if (
-        !enabled ||
         event.ctrlKey ||
         event.defaultPrevented ||
         Math.abs(event.deltaX) > Math.abs(event.deltaY)
@@ -216,14 +198,6 @@ function initSmoothScroll() {
     },
     { passive: true },
   );
-  reduced.addEventListener("change", () => {
-    enabled = !reduced.matches;
-    if (!enabled) {
-      cancelAnimationFrame(raf);
-      raf = 0;
-      target = null;
-    }
-  });
 }
 
 const english = document.documentElement.lang === "en";
