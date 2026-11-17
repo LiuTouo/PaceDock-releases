@@ -55,8 +55,8 @@
     <meta property="og:image:alt" content="PaceDock application icon" />
     <meta name="twitter:card" content="summary" />
     <link rel="icon" href="../assets/favicon.png" type="image/png" />
-    <link rel="stylesheet" href="../assets/site.css?v=5" />
-    <script type="module" src="../assets/site.js?v=5"></script>
+    <link rel="stylesheet" href="../assets/site.css?v=6" />
+    <script type="module" src="../assets/site.js?v=6"></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
@@ -200,114 +200,122 @@
             >
           </h2>
         </div>
+        </div>
         <div class="feature-story" data-active-scene="test">
-          <div class="story-copy">
-            <article class="feature" data-scene="test">
-              <span class="feature-number">01 / Test</span>
-              <h3>Every candidate,<br />same yardstick.</h3>
-              <p>
-                After an automatic FPS cap, candidates warm up and get sampled
-                one by one. Candidates cover every logical processor of a
-                physical core, core 0 included; hybrid designs use P-cores only.
-              </p>
-              <div class="feature-tags">
-                <span>Automatic FPS cap</span><span>Warm-up + sampling</span
-                ><span>Random order</span>
-              </div>
-            </article>
-            <article class="feature" data-scene="rank">
-              <span class="feature-number">02 / Rank</span>
-              <h3>Retests settle rankings,<br />not luck.</h3>
-              <p>
-                The top two run again in reverse order. Close results, reversed
-                rankings, or insufficient data are labeled explicitly—no preset
-                winner when it is close.
-              </p>
-              <a class="text-link" href="#demo"
-                >Try it yourself <span aria-hidden="true">↗</span></a
-              >
-            </article>
-            <article class="feature" data-scene="apply">
-              <span class="feature-number">03 / Apply</span>
-              <h3>Before applying,<br />know the way back.</h3>
-              <p>
-                A complete policy snapshot is saved before apply; masks are
-                written and read back for verification. History is reviewable,
-                and the original Windows policy restores with one click.
-              </p>
-              <div class="feature-tags">
-                <span>Policy snapshot</span><span>Write + readback</span
-                ><span>One-click restore</span>
-              </div>
-            </article>
-          </div>
-          <div class="story-stage" aria-hidden="true">
-            <div class="scene-panel scene-test" data-panel="test">
-              <div class="scene-topline">
-                <span>Test schedule</span><span class="pill">Illustrative</span>
-              </div>
-              <div class="phase-row done">
-                <span><strong>Core 1</strong><small>LP 2, 3</small></span>
-                <span class="pill neutral">Done</span>
-                <span class="phase-bar"><span class="w100"></span></span>
-              </div>
-              <div class="phase-row">
-                <span><strong>Core 3</strong><small>LP 6, 7</small></span>
-                <span class="pill">Sampling</span>
-                <span class="phase-bar"><span class="w62"></span></span>
-              </div>
-              <div class="phase-row">
-                <span><strong>Core 5</strong><small>LP 10, 11</small></span>
-                <span class="pill neutral">Queued</span>
-                <span class="phase-bar"><span class="w0"></span></span>
-              </div>
-              <p class="scene-caption">One load, measured one by one.</p>
-            </div>
-            <div class="scene-panel scene-rank" data-panel="rank">
-              <div class="scene-topline">
-                <span>Retest results</span><span class="pill">Illustrative</span>
-              </div>
-              <div class="rank-row">
-                <span class="rank-no">#1</span>
-                <span class="rank-name">Core 3<small>LP 6, 7</small></span>
-                <span class="rank-score">98.7</span>
-                <span class="pill neutral">Consistent</span>
-              </div>
-              <div class="rank-row close">
-                <span class="rank-no">#2</span>
-                <span class="rank-name">Core 5<small>LP 10, 11</small></span>
-                <span class="rank-score">98.5</span>
-                <span class="pill warning">Close</span>
-              </div>
-              <div class="rank-row">
-                <span class="rank-no">#3</span>
-                <span class="rank-name">Core 1<small>LP 2, 3</small></span>
-                <span class="rank-score">97.2</span>
-                <span class="pill neutral">—</span>
-              </div>
-              <p class="scene-caption">No preset winner when it is close.</p>
-            </div>
-            <div class="scene-panel scene-apply" data-panel="apply">
-              <div class="scene-topline">
-                <span>Apply &amp; restore</span
-                ><span class="pill">Illustrative</span>
-              </div>
-              <div class="apply-summary">
-                <span class="status-dot" aria-hidden="true"></span>
-                <span>
-                  <strong>Core 3 (LP 6, 7)</strong>
-                  <small>Mask written and verified by readback</small>
-                </span>
-              </div>
-              <ul class="apply-facts">
-                <li><span>Candidate source</span><strong>This retest</strong></li>
-                <li><span>Policy snapshot</span><strong>Saved before apply</strong></li>
-                <li><span>Restore</span><strong>Original Windows policy</strong></li>
-              </ul>
-              <p class="scene-caption">Reversible changes, reviewable history.</p>
+          <div class="pan-viewport">
+            <div class="pan-track">
+              <article class="feature-slide" data-scene="test">
+                <div class="feature">
+                  <span class="feature-number">01 / Test</span>
+                  <h3>Every candidate,<br />same yardstick.</h3>
+                  <p>
+                    After an automatic FPS cap, candidates warm up and get sampled
+                    one by one. Candidates cover every logical processor of a
+                    physical core, core 0 included; hybrid designs use P-cores only.
+                  </p>
+                  <div class="feature-tags">
+                    <span>Automatic FPS cap</span><span>Warm-up + sampling</span
+                    ><span>Random order</span>
+                  </div>
+                </div>
+                <div class="scene-panel scene-test" data-panel="test">
+                  <div class="scene-topline">
+                    <span>Test schedule</span><span class="pill">Illustrative</span>
+                  </div>
+                  <div class="phase-row done">
+                    <span><strong>Core 1</strong><small>LP 2, 3</small></span>
+                    <span class="pill neutral">Done</span>
+                    <span class="phase-bar"><span class="w100"></span></span>
+                  </div>
+                  <div class="phase-row">
+                    <span><strong>Core 3</strong><small>LP 6, 7</small></span>
+                    <span class="pill">Sampling</span>
+                    <span class="phase-bar"><span class="w62"></span></span>
+                  </div>
+                  <div class="phase-row">
+                    <span><strong>Core 5</strong><small>LP 10, 11</small></span>
+                    <span class="pill neutral">Queued</span>
+                    <span class="phase-bar"><span class="w0"></span></span>
+                  </div>
+                  <p class="scene-caption">One load, measured one by one.</p>
+                </div>
+              </article>
+              <article class="feature-slide" data-scene="rank">
+                <div class="feature">
+                  <span class="feature-number">02 / Rank</span>
+                  <h3>Retests settle rankings,<br />not luck.</h3>
+                  <p>
+                    The top two run again in reverse order. Close results, reversed
+                    rankings, or insufficient data are labeled explicitly—no preset
+                    winner when it is close.
+                  </p>
+                  <a class="text-link" href="#demo"
+                    >Try it yourself <span aria-hidden="true">↗</span></a
+                  >
+                </div>
+                <div class="scene-panel scene-rank" data-panel="rank">
+                  <div class="scene-topline">
+                    <span>Retest results</span><span class="pill">Illustrative</span>
+                  </div>
+                  <div class="rank-row">
+                    <span class="rank-no">#1</span>
+                    <span class="rank-name">Core 3<small>LP 6, 7</small></span>
+                    <span class="rank-score">98.7</span>
+                    <span class="pill neutral">Consistent</span>
+                  </div>
+                  <div class="rank-row close">
+                    <span class="rank-no">#2</span>
+                    <span class="rank-name">Core 5<small>LP 10, 11</small></span>
+                    <span class="rank-score">98.5</span>
+                    <span class="pill warning">Close</span>
+                  </div>
+                  <div class="rank-row">
+                    <span class="rank-no">#3</span>
+                    <span class="rank-name">Core 1<small>LP 2, 3</small></span>
+                    <span class="rank-score">97.2</span>
+                    <span class="pill neutral">—</span>
+                  </div>
+                  <p class="scene-caption">No preset winner when it is close.</p>
+                </div>
+              </article>
+              <article class="feature-slide" data-scene="apply">
+                <div class="feature">
+                  <span class="feature-number">03 / Apply</span>
+                  <h3>Before applying,<br />know the way back.</h3>
+                  <p>
+                    A complete policy snapshot is saved before apply; masks are
+                    written and read back for verification. History is reviewable,
+                    and the original Windows policy restores with one click.
+                  </p>
+                  <div class="feature-tags">
+                    <span>Policy snapshot</span><span>Write + readback</span
+                    ><span>One-click restore</span>
+                  </div>
+                </div>
+                <div class="scene-panel scene-apply" data-panel="apply">
+                  <div class="scene-topline">
+                    <span>Apply &amp; restore</span
+                    ><span class="pill">Illustrative</span>
+                  </div>
+                  <div class="apply-summary">
+                    <span class="status-dot" aria-hidden="true"></span>
+                    <span>
+                      <strong>Core 3 (LP 6, 7)</strong>
+                      <small>Mask written and verified by readback</small>
+                    </span>
+                  </div>
+                  <ul class="apply-facts">
+                    <li><span>Candidate source</span><strong>This retest</strong></li>
+                    <li><span>Policy snapshot</span><strong>Saved before apply</strong></li>
+                    <li><span>Restore</span><strong>Original Windows policy</strong></li>
+                  </ul>
+                  <p class="scene-caption">Reversible changes, reviewable history.</p>
+                </div>
+              </article>
             </div>
           </div>
         </div>
+        <div class="shell">
         <div class="secondary-features">
           <p>
             <strong>ISR probing.</strong>
@@ -326,6 +334,7 @@
             games.
           </p>
         </div>
+      </div>
       </section>
       <section
         id="demo"

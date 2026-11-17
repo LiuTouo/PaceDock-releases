@@ -1,8 +1,24 @@
 import { test, expect } from "@playwright/test";
 
-const scenes = ["test", "rank", "apply"];
 const engineering =
   /debug|native backend|SHA-256|runtime certification|runtime 認證|test script|測試腳本|檔案雜湊|HMAC|registry hive|登錄檔機碼/i;
+
+// Scroll the pinned story to a 0..1 progress point.
+const panTo = (page, progress) =>
+  page.locator(".feature-story").evaluate((el, p) => {
+    const top = el.getBoundingClientRect().top + scrollY;
+    const total = el.offsetHeight - innerHeight;
+    window.scrollTo({ top: top + p * total, behavior: "instant" });
+  }, progress);
+const trackX = (page) =>
+  page.locator(".pan-track").evaluate((el) => {
+    const t = getComputedStyle(el).transform;
+    return t === "none" ? 0 : new DOMMatrixReadOnly(t).m41;
+  });
+const trackMax = (page) =>
+  page.locator(".pan-track").evaluate(
+    (el) => el.scrollWidth - el.parentElement.clientWidth,
+  );
 
 for (const path of ["./", "en/"]) {
   test.describe(`showcase ${path}`, () => {
@@ -10,67 +26,67 @@ for (const path of ["./", "en/"]) {
       await page.goto(path);
     });
 
-    test("story follows forward, reverse, and fast scrolling", async ({
+    test("panned deck scrubs with scroll in both directions", async ({
       page,
     }, testInfo) => {
       await expect(page.locator("html")).toHaveClass(/story-enabled/);
-      for (const name of [...scenes, "rank", "test"]) {
-        await page.locator(`[data-scene="${name}"]`).evaluate((element) => {
-          element.scrollIntoView({ block: "center", behavior: "instant" });
-        });
+      const max = await trackMax(page);
+      expect(max).toBeGreaterThan(0);
+      for (const [progress, name] of [
+        [0, "test"],
+        [0.5, "rank"],
+        [1, "apply"],
+        [0.5, "rank"],
+        [0, "test"],
+      ]) {
+        await panTo(page, progress);
         await expect(page.locator(".feature-story")).toHaveAttribute(
           "data-active-scene",
           name,
         );
-        const panel = page.locator(`[data-panel="${name}"]`);
-        await expect
-          .poll(() => panel.evaluate((el) => getComputedStyle(el).opacity))
-          .toBe("1");
         await expect(page.locator(".scene-panel.is-active")).toHaveCount(1);
-        await panel.screenshot({
-          path: testInfo.outputPath(`scene-${name}.png`),
-          animations: "disabled",
-        });
+        const x = await trackX(page);
+        expect(Math.abs(x + progress * max)).toBeLessThanOrEqual(1);
       }
-      await page.evaluate(() => {
-        for (const name of ["apply", "test", "rank", "apply"]) {
-          document
-            .querySelector(`[data-scene="${name}"]`)
-            .scrollIntoView({ block: "center", behavior: "instant" });
-        }
-      });
+      await panTo(page, 1);
+      await panTo(page, 0);
       await expect(page.locator(".feature-story")).toHaveAttribute(
         "data-active-scene",
-        "apply",
+        "test",
       );
+      const active = page.locator(".scene-panel.is-active");
+      await active.screenshot({
+        path: testInfo.outputPath("scene-active.png"),
+        animations: "disabled",
+      });
     });
 
     for (const viewport of [
       { width: 1920, height: 1080 },
       { width: 1440, height: 900 },
     ]) {
-      test(`wide story advances and reverses at ${viewport.width}×${viewport.height}`, async ({
+      test(`panned deck advances and reverses at ${viewport.width}×${viewport.height}`, async ({
         page,
       }) => {
         await page.setViewportSize(viewport);
         await expect(page.locator("html")).toHaveClass(/story-enabled/);
-        for (const name of [...scenes, "test"]) {
-          await page
-            .locator(`[data-scene="${name}"]`)
-            .evaluate((el) =>
-              el.scrollIntoView({ block: "center", behavior: "instant" }),
-            );
+        const max = await trackMax(page);
+        for (const [progress, name] of [
+          [0, "test"],
+          [0.5, "rank"],
+          [1, "apply"],
+          [0, "test"],
+        ]) {
+          await panTo(page, progress);
           await expect(page.locator(".feature-story")).toHaveAttribute(
             "data-active-scene",
             name,
           );
-          await expect
-            .poll(() =>
-              page
-                .locator(`[data-panel="${name}"]`)
-                .evaluate((el) => getComputedStyle(el).opacity),
-            )
-            .toBe("1");
+          const x = await trackX(page);
+          expect(Math.abs(x + progress * max)).toBeLessThanOrEqual(1);
+          await expect(
+            page.locator(`[data-panel="${name}"]`),
+          ).not.toHaveAttribute("aria-hidden", "true");
         }
       });
     }
@@ -129,11 +145,7 @@ for (const path of ["./", "en/"]) {
           .locator("html")
           .evaluate((el) => getComputedStyle(el).scrollBehavior),
       ).toBe("smooth");
-      await page
-        .locator('[data-scene="rank"]')
-        .evaluate((el) =>
-          el.scrollIntoView({ block: "center", behavior: "instant" }),
-        );
+      await panTo(page, 0.5);
       await expect(page.locator(".feature-story")).toHaveAttribute(
         "data-active-scene",
         "rank",
@@ -153,11 +165,7 @@ for (const path of ["./", "en/"]) {
       await expect(page.locator("#demo-result")).toBeVisible();
       await page.emulateMedia({ reducedMotion: "no-preference" });
       await expect(page.locator("html")).toHaveClass(/story-enabled/);
-      await page
-        .locator('[data-scene="rank"]')
-        .evaluate((el) =>
-          el.scrollIntoView({ block: "center", behavior: "instant" }),
-        );
+      await panTo(page, 0.5);
       await expect(page.locator(".feature-story")).toHaveAttribute(
         "data-active-scene",
         "rank",
@@ -297,7 +305,14 @@ for (const path of ["./", "en/"]) {
     test("keyboard focus is visible immediately, including during entrances", async ({
       page,
     }) => {
-      for (const selector of [".hero .button.primary", ".feature .text-link"]) {
+      // The demo link lives on the second slide: pan it into view first,
+      // and check it before scrolling away to the hero button.
+      await panTo(page, 0.5);
+      await expect(page.locator(".feature-story")).toHaveAttribute(
+        "data-active-scene",
+        "rank",
+      );
+      for (const selector of [".feature .text-link", ".hero .button.primary"]) {
         const link = page.locator(selector).first();
         await link.focus();
         await expect(link).toBeFocused();

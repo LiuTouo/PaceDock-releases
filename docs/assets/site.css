@@ -598,36 +598,30 @@ html:lang(en) .hero h1 {
   font-size: 12px;
 }
 .feature-story {
-  display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
-  gap: 64px 80px;
-  align-items: center;
+  position: relative;
+  margin-top: 48px;
+  max-width: min(1280px, calc(100% - 112px));
+  margin-inline: auto;
 }
-.story-copy,
-.story-stage {
-  display: contents;
+/* Each step is one composed block: copy and panel travel together. */
+.feature-slide {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  padding-block: 56px;
+  min-width: 0;
+}
+@media (min-width: 900px) {
+  .feature-slide {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: 56px;
+    padding-block: 72px;
+  }
 }
 .feature,
 .scene-panel {
   min-width: 0;
-}
-.feature[data-scene="test"] {
-  order: 1;
-}
-.scene-panel[data-panel="test"] {
-  order: 2;
-}
-.feature[data-scene="rank"] {
-  order: 3;
-}
-.scene-panel[data-panel="rank"] {
-  order: 4;
-}
-.feature[data-scene="apply"] {
-  order: 5;
-}
-.scene-panel[data-panel="apply"] {
-  order: 6;
 }
 .feature-number {
   display: inline-flex;
@@ -1525,46 +1519,34 @@ summary::marker {
     animation: confirm-in 300ms var(--ease-out);
   }
 @media (min-width: 1024px) and (min-height: 760px) {
-  .story-enabled .feature-story {
-    align-items: start;
-    gap: 80px;
-  }
-  .story-enabled .story-copy {
-    display: block;
-    order: 0;
-  }
-  .story-enabled .feature {
-    min-height: 68svh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-  }
-  .story-enabled .story-stage {
-    display: grid;
-    order: 1;
+  /* Panned deck: the section pins for three viewports and the track slides
+     horizontally; vertical scroll scrubs the pan. */
+  .story-enabled .pan-viewport {
     position: sticky;
-    top: 124px;
-    padding-block: 24px;
+    top: 84px;
+    height: calc(100svh - 84px);
+    overflow: hidden;
   }
-  .story-enabled .scene-panel {
-    grid-area: 1 / 1;
-    align-self: center;
-    opacity: 0;
+  .story-enabled .feature-story {
+    height: 300svh;
+    margin-top: 0;
+    max-width: none;
+  }
+  .story-enabled .pan-track {
+    display: flex;
+    height: 100%;
+    will-change: transform;
+  }
+  .story-enabled .feature-slide {
+    flex: 0 0 100%;
+    grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+    align-items: center;
+    gap: 5vw;
+    padding-block: 0;
+    padding-inline: clamp(24px, 6vw, 96px);
+  }
+  .story-enabled .feature-slide[aria-hidden="true"] {
     visibility: hidden;
-    transform: translateY(28px) scale(0.98);
-    filter: blur(3px);
-    transition:
-      opacity 450ms var(--ease-standard),
-      transform 550ms var(--ease-out),
-      filter 450ms var(--ease-standard),
-      visibility 550ms;
-  }
-  .story-enabled .scene-panel.is-active {
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    filter: blur(0);
   }
 }
 @media (max-width: 1100px) {
@@ -1583,13 +1565,6 @@ summary::marker {
   }
   .hero-description {
     font-size: 16px;
-  }
-  .feature-story,
-  .story-enabled .feature-story {
-    column-gap: 40px;
-  }
-  .scene-panel {
-    padding: 22px;
   }
   .demo-layout {
     grid-template-columns: 280px minmax(0, 1fr);
@@ -1617,7 +1592,7 @@ summary::marker {
     margin-bottom: 40px;
   }
   .feature-story {
-    column-gap: 32px;
+    margin-top: 32px;
   }
   .split-heading {
     flex-direction: column;
@@ -1772,9 +1747,6 @@ summary::marker {
   .feature h3 {
     font-size: 32px;
     margin-block: 18px;
-  }
-  .feature > p {
-    max-width: none;
   }
   .feature-tags {
     margin-top: 20px;

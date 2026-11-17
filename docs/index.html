@@ -52,8 +52,8 @@
     <meta property="og:image:alt" content="PaceDock 應用程式圖示" />
     <meta name="twitter:card" content="summary" />
     <link rel="icon" href="assets/favicon.png" type="image/png" />
-    <link rel="stylesheet" href="assets/site.css?v=5" />
-    <script type="module" src="assets/site.js?v=5"></script>
+    <link rel="stylesheet" href="assets/site.css?v=6" />
+    <script type="module" src="assets/site.js?v=6"></script>
   </head>
   <body>
     <a class="skip-link" href="#main">跳至主要內容</a>
@@ -197,114 +197,122 @@
             >
           </h2>
         </div>
+        </div>
         <div class="feature-story" data-active-scene="test">
-          <div class="story-copy">
-            <article class="feature" data-scene="test">
-              <span class="feature-number">01 / 測試</span>
-              <h3>每顆候選，<br />同一把尺。</h3>
-              <p>
-                自動限幀後，候選依序暖機與取樣。候選涵蓋整顆實體核心的全部邏輯處理器，包含核心
-                0，混雜架構只取 P-core。
-              </p>
-              <div class="feature-tags">
-                <span>自動 FPS cap</span><span>暖機＋取樣</span
-                ><span>隨機排列</span>
-              </div>
-            </article>
-            <article class="feature" data-scene="rank">
-              <span class="feature-number">02 / 排名</span>
-              <h3>複測定名次，<br />不是運氣。</h3>
-              <p>
-                前兩名以相反順序再測一次。差異接近、排名反轉或資料不足都會明確標示——接近時不預設勝者。
-              </p>
-              <a class="text-link" href="#demo"
-                >親自試一次 <span aria-hidden="true">↗</span></a
-              >
-            </article>
-            <article class="feature" data-scene="apply">
-              <span class="feature-number">03 / 套用</span>
-              <h3>套用之前，<br />先知道怎麼回頭。</h3>
-              <p>
-                套用前保存完整策略快照；遮罩寫入後回讀驗證。歷史紀錄可回顧，也能一鍵還原成
-                Windows 原始策略。
-              </p>
-              <div class="feature-tags">
-                <span>策略快照</span><span>寫入回讀</span><span>一鍵還原</span>
-              </div>
-            </article>
-          </div>
-          <div class="story-stage" aria-hidden="true">
-            <div class="scene-panel scene-test" data-panel="test">
-              <div class="scene-topline">
-                <span>測試排程</span><span class="pill">功能示意</span>
-              </div>
-              <div class="phase-row done">
-                <span><strong>實體核心 1</strong><small>LP 2、3</small></span>
-                <span class="pill neutral">完成</span>
-                <span class="phase-bar"><span class="w100"></span></span>
-              </div>
-              <div class="phase-row">
-                <span><strong>實體核心 3</strong><small>LP 6、7</small></span>
-                <span class="pill">取樣中</span>
-                <span class="phase-bar"><span class="w62"></span></span>
-              </div>
-              <div class="phase-row">
-                <span><strong>實體核心 5</strong><small>LP 10、11</small></span>
-                <span class="pill neutral">待測</span>
-                <span class="phase-bar"><span class="w0"></span></span>
-              </div>
-              <p class="scene-caption">同一負載，逐一量測。</p>
-            </div>
-            <div class="scene-panel scene-rank" data-panel="rank">
-              <div class="scene-topline">
-                <span>複測結果</span><span class="pill">功能示意</span>
-              </div>
-              <div class="rank-row">
-                <span class="rank-no">#1</span>
-                <span class="rank-name"
-                  >實體核心 3<small>LP 6、7</small></span
-                >
-                <span class="rank-score">98.7</span>
-                <span class="pill neutral">排名一致</span>
-              </div>
-              <div class="rank-row close">
-                <span class="rank-no">#2</span>
-                <span class="rank-name"
-                  >實體核心 5<small>LP 10、11</small></span
-                >
-                <span class="rank-score">98.5</span>
-                <span class="pill warning">差異接近</span>
-              </div>
-              <div class="rank-row">
-                <span class="rank-no">#3</span>
-                <span class="rank-name"
-                  >實體核心 1<small>LP 2、3</small></span
-                >
-                <span class="rank-score">97.2</span>
-                <span class="pill neutral">—</span>
-              </div>
-              <p class="scene-caption">接近時不預選勝者。</p>
-            </div>
-            <div class="scene-panel scene-apply" data-panel="apply">
-              <div class="scene-topline">
-                <span>套用與還原</span><span class="pill">功能示意</span>
-              </div>
-              <div class="apply-summary">
-                <span class="status-dot" aria-hidden="true"></span>
-                <span>
-                  <strong>實體核心 3（LP 6、7）</strong>
-                  <small>遮罩已寫入並回讀驗證</small>
-                </span>
-              </div>
-              <ul class="apply-facts">
-                <li><span>候選來源</span><strong>本次複測結果</strong></li>
-                <li><span>策略快照</span><strong>套用前已保存</strong></li>
-                <li><span>還原</span><strong>Windows 原始策略</strong></li>
-              </ul>
-              <p class="scene-caption">改動可逆，紀錄可查。</p>
+          <div class="pan-viewport">
+            <div class="pan-track">
+              <article class="feature-slide" data-scene="test">
+                <div class="feature">
+                  <span class="feature-number">01 / 測試</span>
+                  <h3>每顆候選，<br />同一把尺。</h3>
+                  <p>
+                    自動限幀後，候選依序暖機與取樣。候選涵蓋整顆實體核心的全部邏輯處理器，包含核心
+                    0，混雜架構只取 P-core。
+                  </p>
+                  <div class="feature-tags">
+                    <span>自動 FPS cap</span><span>暖機＋取樣</span
+                    ><span>隨機排列</span>
+                  </div>
+                </div>
+                <div class="scene-panel scene-test" data-panel="test">
+                  <div class="scene-topline">
+                    <span>測試排程</span><span class="pill">功能示意</span>
+                  </div>
+                  <div class="phase-row done">
+                    <span><strong>實體核心 1</strong><small>LP 2、3</small></span>
+                    <span class="pill neutral">完成</span>
+                    <span class="phase-bar"><span class="w100"></span></span>
+                  </div>
+                  <div class="phase-row">
+                    <span><strong>實體核心 3</strong><small>LP 6、7</small></span>
+                    <span class="pill">取樣中</span>
+                    <span class="phase-bar"><span class="w62"></span></span>
+                  </div>
+                  <div class="phase-row">
+                    <span><strong>實體核心 5</strong><small>LP 10、11</small></span>
+                    <span class="pill neutral">待測</span>
+                    <span class="phase-bar"><span class="w0"></span></span>
+                  </div>
+                  <p class="scene-caption">同一負載，逐一量測。</p>
+                </div>
+              </article>
+              <article class="feature-slide" data-scene="rank">
+                <div class="feature">
+                  <span class="feature-number">02 / 排名</span>
+                  <h3>複測定名次，<br />不是運氣。</h3>
+                  <p>
+                    前兩名以相反順序再測一次。差異接近、排名反轉或資料不足都會明確標示——接近時不預設勝者。
+                  </p>
+                  <a class="text-link" href="#demo"
+                    >親自試一次 <span aria-hidden="true">↗</span></a
+                  >
+                </div>
+                <div class="scene-panel scene-rank" data-panel="rank">
+                  <div class="scene-topline">
+                    <span>複測結果</span><span class="pill">功能示意</span>
+                  </div>
+                  <div class="rank-row">
+                    <span class="rank-no">#1</span>
+                    <span class="rank-name"
+                      >實體核心 3<small>LP 6、7</small></span
+                    >
+                    <span class="rank-score">98.7</span>
+                    <span class="pill neutral">排名一致</span>
+                  </div>
+                  <div class="rank-row close">
+                    <span class="rank-no">#2</span>
+                    <span class="rank-name"
+                      >實體核心 5<small>LP 10、11</small></span
+                    >
+                    <span class="rank-score">98.5</span>
+                    <span class="pill warning">差異接近</span>
+                  </div>
+                  <div class="rank-row">
+                    <span class="rank-no">#3</span>
+                    <span class="rank-name"
+                      >實體核心 1<small>LP 2、3</small></span
+                    >
+                    <span class="rank-score">97.2</span>
+                    <span class="pill neutral">—</span>
+                  </div>
+                  <p class="scene-caption">接近時不預選勝者。</p>
+                </div>
+              </article>
+              <article class="feature-slide" data-scene="apply">
+                <div class="feature">
+                  <span class="feature-number">03 / 套用</span>
+                  <h3>套用之前，<br />先知道怎麼回頭。</h3>
+                  <p>
+                    套用前保存完整策略快照；遮罩寫入後回讀驗證。歷史紀錄可回顧，也能一鍵還原成
+                    Windows 原始策略。
+                  </p>
+                  <div class="feature-tags">
+                    <span>策略快照</span><span>寫入回讀</span><span>一鍵還原</span>
+                  </div>
+                </div>
+                <div class="scene-panel scene-apply" data-panel="apply">
+                  <div class="scene-topline">
+                    <span>套用與還原</span><span class="pill">功能示意</span>
+                  </div>
+                  <div class="apply-summary">
+                    <span class="status-dot" aria-hidden="true"></span>
+                    <span>
+                      <strong>實體核心 3（LP 6、7）</strong>
+                      <small>遮罩已寫入並回讀驗證</small>
+                    </span>
+                  </div>
+                  <ul class="apply-facts">
+                    <li><span>候選來源</span><strong>本次複測結果</strong></li>
+                    <li><span>策略快照</span><strong>套用前已保存</strong></li>
+                    <li><span>還原</span><strong>Windows 原始策略</strong></li>
+                  </ul>
+                  <p class="scene-caption">改動可逆，紀錄可查。</p>
+                </div>
+              </article>
             </div>
           </div>
         </div>
+        <div class="shell">
         <div class="secondary-features">
           <p>
             <strong>實測中斷核心。</strong
@@ -319,6 +327,7 @@
             >系統匣常駐，管理高精度計時器狀態與遊戲節流豁免名單。
           </p>
         </div>
+      </div>
       </section>
       <section
         id="demo"

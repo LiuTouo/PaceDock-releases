@@ -80,7 +80,11 @@ for (const locale of locales) {
 
     test("scroll reveals settle visible", async ({ page }) => {
       await expect(page.locator("html")).toHaveClass(/js/);
-      await page.locator("#features").scrollIntoViewIfNeeded();
+      await page
+        .locator(".feature-story")
+        .evaluate((el) =>
+          el.scrollIntoView({ block: "start", behavior: "instant" }),
+        );
       const first = page.locator(".feature").first();
       await expect(first).toHaveClass(/in-view/);
       await expect
