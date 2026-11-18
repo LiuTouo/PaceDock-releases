@@ -1519,34 +1519,28 @@ summary::marker {
     animation: confirm-in 300ms var(--ease-out);
   }
 @media (min-width: 1024px) and (min-height: 760px) {
-  /* Panned deck: the section pins for three viewports and the track slides
-     horizontally; vertical scroll scrubs the pan. */
-  .story-enabled .pan-viewport {
-    position: sticky;
-    top: 84px;
-    height: calc(100svh - 84px);
-    overflow: hidden;
+  /* 沉浸式垂直敘事：每個步驟占滿一屏（扣除 sticky header），
+     滾動鄰近時吸附對齊；場景垂直推進，無橫向位移。 */
+  html.story-enabled {
+    scroll-snap-type: y proximity;
+  }
+  /* 主要區塊頂也是吸附點：html 的 scroll-padding-top（112px）同時
+     約束錨點與吸附位置，兩者落點一致，不會被吸附拉離錨點目標。 */
+  .story-enabled main > * {
+    scroll-snap-align: start;
   }
   .story-enabled .feature-story {
-    height: 300svh;
     margin-top: 0;
     max-width: none;
   }
-  .story-enabled .pan-track {
-    display: flex;
-    height: 100%;
-    will-change: transform;
-  }
   .story-enabled .feature-slide {
-    flex: 0 0 100%;
+    min-height: calc(100svh - 112px);
     grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
     align-items: center;
     gap: 5vw;
-    padding-block: 0;
+    padding-block: 24px;
     padding-inline: clamp(24px, 6vw, 96px);
-  }
-  .story-enabled .feature-slide[aria-hidden="true"] {
-    visibility: hidden;
+    scroll-snap-align: start;
   }
 }
 @media (max-width: 1100px) {

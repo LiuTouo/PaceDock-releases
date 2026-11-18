@@ -3,22 +3,27 @@ import { test, expect } from "@playwright/test";
 const engineering =
   /debug|native backend|SHA-256|runtime certification|runtime 認證|test script|測試腳本|檔案雜湊|HMAC|registry hive|登錄檔機碼/i;
 
-// Scroll the pinned story to a 0..1 progress point.
-const panTo = (page, progress) =>
-  page.locator(".feature-story").evaluate((el, p) => {
-    const top = el.getBoundingClientRect().top + scrollY;
-    const total = el.offsetHeight - innerHeight;
-    window.scrollTo({ top: top + p * total, behavior: "instant" });
-  }, progress);
-const trackX = (page) =>
-  page.locator(".pan-track").evaluate((el) => {
-    const t = getComputedStyle(el).transform;
-    return t === "none" ? 0 : new DOMMatrixReadOnly(t).m41;
+// Scroll a story slide into view; CSS scroll-margin puts it under the header.
+const goToScene = (page, name) =>
+  page
+    .locator(`[data-scene="${name}"]`)
+    .evaluate((el) => el.scrollIntoView({ behavior: "instant", block: "start" }));
+const deckGeometry = (page) =>
+  page.evaluate(() => {
+    const slides = [...document.querySelectorAll(".feature-slide")];
+    const tops = slides.map((s) => s.offsetTop);
+    return {
+      count: slides.length,
+      stackedVertically: tops.every((t, i) => i === 0 || t > tops[i - 1]),
+      fullHeight: slides.every(
+        (s) => s.offsetHeight >= innerHeight - 112 - 1,
+      ),
+      snapType: getComputedStyle(document.documentElement).scrollSnapType,
+      horizontalTransform: getComputedStyle(
+        document.querySelector(".pan-track"),
+      ).transform,
+    };
   });
-const trackMax = (page) =>
-  page.locator(".pan-track").evaluate(
-    (el) => el.scrollWidth - el.parentElement.clientWidth,
-  );
 
 for (const path of ["./", "en/"]) {
   test.describe(`showcase ${path}`, () => {
@@ -26,12 +31,16 @@ for (const path of ["./", "en/"]) {
       await page.goto(path);
     });
 
-    test("panned deck scrubs with scroll in both directions", async ({
+    test("immersive vertical deck advances and reverses with scroll", async ({
       page,
     }, testInfo) => {
       await expect(page.locator("html")).toHaveClass(/story-enabled/);
-      const max = await trackMax(page);
-      expect(max).toBeGreaterThan(0);
+      const geometry = await deckGeometry(page);
+      expect(geometry.count).toBe(3);
+      expect(geometry.stackedVertically).toBe(true);
+      expect(geometry.fullHeight).toBe(true);
+      expect(geometry.snapType).toMatch(/^y/);
+      expect(geometry.horizontalTransform).toBe("none");
       for (const [progress, name] of [
         [0, "test"],
         [0.5, "rank"],
@@ -39,21 +48,13 @@ for (const path of ["./", "en/"]) {
         [0.5, "rank"],
         [0, "test"],
       ]) {
-        await panTo(page, progress);
+        await goToScene(page, name);
         await expect(page.locator(".feature-story")).toHaveAttribute(
           "data-active-scene",
           name,
         );
         await expect(page.locator(".scene-panel.is-active")).toHaveCount(1);
-        const x = await trackX(page);
-        expect(Math.abs(x + progress * max)).toBeLessThanOrEqual(1);
       }
-      await panTo(page, 1);
-      await panTo(page, 0);
-      await expect(page.locator(".feature-story")).toHaveAttribute(
-        "data-active-scene",
-        "test",
-      );
       const active = page.locator(".scene-panel.is-active");
       await active.screenshot({
         path: testInfo.outputPath("scene-active.png"),
@@ -65,25 +66,23 @@ for (const path of ["./", "en/"]) {
       { width: 1920, height: 1080 },
       { width: 1440, height: 900 },
     ]) {
-      test(`panned deck advances and reverses at ${viewport.width}×${viewport.height}`, async ({
+      test(`vertical deck activates scenes at ${viewport.width}×${viewport.height}`, async ({
         page,
       }) => {
         await page.setViewportSize(viewport);
         await expect(page.locator("html")).toHaveClass(/story-enabled/);
-        const max = await trackMax(page);
         for (const [progress, name] of [
           [0, "test"],
           [0.5, "rank"],
           [1, "apply"],
           [0, "test"],
         ]) {
-          await panTo(page, progress);
+          await goToScene(page, name);
           await expect(page.locator(".feature-story")).toHaveAttribute(
             "data-active-scene",
             name,
           );
-          const x = await trackX(page);
-          expect(Math.abs(x + progress * max)).toBeLessThanOrEqual(1);
+          await expect(page.locator(".scene-panel.is-active")).toHaveCount(1);
           await expect(
             page.locator(`[data-panel="${name}"]`),
           ).not.toHaveAttribute("aria-hidden", "true");
@@ -145,7 +144,7 @@ for (const path of ["./", "en/"]) {
           .locator("html")
           .evaluate((el) => getComputedStyle(el).scrollBehavior),
       ).toBe("smooth");
-      await panTo(page, 0.5);
+      await goToScene(page, "rank");
       await expect(page.locator(".feature-story")).toHaveAttribute(
         "data-active-scene",
         "rank",
@@ -165,7 +164,7 @@ for (const path of ["./", "en/"]) {
       await expect(page.locator("#demo-result")).toBeVisible();
       await page.emulateMedia({ reducedMotion: "no-preference" });
       await expect(page.locator("html")).toHaveClass(/story-enabled/);
-      await panTo(page, 0.5);
+      await goToScene(page, "rank");
       await expect(page.locator(".feature-story")).toHaveAttribute(
         "data-active-scene",
         "rank",
@@ -305,9 +304,9 @@ for (const path of ["./", "en/"]) {
     test("keyboard focus is visible immediately, including during entrances", async ({
       page,
     }) => {
-      // The demo link lives on the second slide: pan it into view first,
+      // The demo link lives on the second slide: scroll it into view first,
       // and check it before scrolling away to the hero button.
-      await panTo(page, 0.5);
+      await goToScene(page, "rank");
       await expect(page.locator(".feature-story")).toHaveAttribute(
         "data-active-scene",
         "rank",

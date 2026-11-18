@@ -13,8 +13,7 @@ function initMotion() {
     ),
   ];
   let revealObserver;
-  let scrub = null;
-  let raf = 0;
+  let sceneObserver = null;
 
   for (const element of reveals) {
     const peers = reveals.filter(
@@ -24,55 +23,17 @@ function initMotion() {
   }
 
   function setActive(index) {
-    const name = steps[index].dataset.scene;
-    steps.forEach((step, i) => {
-      if (i === index) step.removeAttribute("aria-hidden");
-      else step.setAttribute("aria-hidden", "true");
-      panels[i].classList.toggle("is-active", i === index);
-    });
-    story.dataset.activeScene = name;
-  }
-
-  // Vertical scroll scrubs the horizontal pan; the paused 1ms animation acts
-  // as a CSP-safe transform we can seek instead of writing inline styles.
-  function applyPan() {
-    raf = 0;
-    if (!scrub) return;
-    const rect = story.getBoundingClientRect();
-    const total = story.offsetHeight - innerHeight;
-    const progress =
-      total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
-    scrub.currentTime = progress;
-    setActive(Math.min(steps.length - 1, Math.round(progress * (steps.length - 1))));
-  }
-
-  function schedulePan() {
-    if (raf || !scrub) return;
-    raf = requestAnimationFrame(applyPan);
-  }
-
-  function measurePan() {
-    if (!scrub) return;
-    const track = story.querySelector(".pan-track");
-    const max = Math.max(0, track.scrollWidth - track.parentElement.clientWidth);
-    scrub.effect.setKeyframes([
-      { transform: "translateX(0px)" },
-      { transform: `translateX(${-max}px)` },
-    ]);
-  }
-
-  function onResize() {
-    measurePan();
-    schedulePan();
+    story.dataset.activeScene = steps[index].dataset.scene;
+    panels.forEach((panel, i) =>
+      panel.classList.toggle("is-active", i === index),
+    );
   }
 
   function refreshMotion() {
     revealObserver?.disconnect();
-    scrub?.cancel();
-    scrub = null;
+    sceneObserver?.disconnect();
+    sceneObserver = null;
     root.classList.remove("motion-ready", "story-enabled");
-    removeEventListener("scroll", schedulePan);
-    removeEventListener("resize", onResize);
 
     // Motion is optional: a failed observer must never hide the site or break the demo.
     try {
@@ -93,30 +54,31 @@ function initMotion() {
       root.classList.add("motion-ready");
 
       if (wide.matches) {
-        const track = story.querySelector(".pan-track");
-        // The class must land before measuring: the track is only a flex row
-        // while story styles apply, otherwise scrollWidth equals the viewport.
+        // 沉浸式垂直敘事：每個步驟占滿一屏，進入視窗即成為作用中場景。
+        // 無橫向位移——場景隨滾動垂直推進（CSS scroll-snap 負責對齊）。
         root.classList.add("story-enabled");
-        scrub = track.animate(
-          [{ transform: "translateX(0px)" }, { transform: "translateX(0px)" }],
-          { duration: 1, easing: "linear", fill: "both" },
+        sceneObserver = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting)
+                setActive(steps.indexOf(entry.target));
+            }
+          },
+          { threshold: 0.55 },
         );
-        scrub.pause();
-        measurePan();
-        addEventListener("scroll", schedulePan, { passive: true });
-        addEventListener("resize", onResize, { passive: true });
+        for (const step of steps) {
+          step.removeAttribute("aria-hidden");
+          sceneObserver.observe(step);
+        }
         setActive(0);
-        applyPan();
       } else {
         for (const step of steps) step.removeAttribute("aria-hidden");
         for (const panel of panels) panel.classList.remove("is-active");
       }
     } catch {
       revealObserver?.disconnect();
-      scrub?.cancel();
-      scrub = null;
-      removeEventListener("scroll", schedulePan);
-      removeEventListener("resize", onResize);
+      sceneObserver?.disconnect();
+      sceneObserver = null;
       root.classList.remove("motion-ready", "story-enabled");
     }
   }
